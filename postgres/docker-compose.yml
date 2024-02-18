@@ -1,0 +1,39 @@
+
+services:
+  pgdatabase:
+    image: postgres:15
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data:rw"
+    ports:
+      - "5432:5432"
+    networks:
+      - pgdatabase
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: dbadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_USERNAME=admin
+      - PGADMIN_DEFAULT_PASSWORD=root
+    volumes:
+      - pgadmindata:/var/lib/pgadmin:rw"
+    ports:
+      - "8080:80"
+    networks:
+      - pgdatabase
+
+networks:
+  pgdatabase:
+    external: true
+
+volumes:
+  pgdata:
+    external: true
+  pgadmindata:
+    external: true
