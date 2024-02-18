@@ -1,0 +1,43 @@
+
+services:
+  pgisdatabase:
+    image: postgis:15-3.4
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: postgisdb
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    command: sh initdb-postgis.sh && sh update-postgis.sh
+    volumes:
+      - pgdata:/var/lib/postgresql/data:rw"
+    ports:
+      - "5432:5432"
+    networks:
+      - pgdatabase
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: dbadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_USERNAME=admin
+      - PGADMIN_DEFAULT_PASSWORD=root
+    volumes:
+      - pgadmindata:/var/lib/pgadmin:rw"
+    ports:
+      - "8080:80"
+    networks:
+      - pgdatabase
+
+networks:
+  pgdatabase:
+    external: true
+
+volumes:
+  pgdata:
+    external: true
+  pgadmindata:
+    external: true
