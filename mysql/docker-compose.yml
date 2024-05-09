@@ -1,0 +1,38 @@
+version: '3.3'
+services:
+  db:
+    # image: mysql:5.7
+    image: biarms/mysql:5.7.33-beta-circleci
+    ### use biarms mysql on mac: https://github.com/biarms/mysql
+    # command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_DATABASE=test
+      - MYSQL_ROOT_PASSWORD=super23root ### default username is root
+    ports:
+      # <Port exposed> : <MySQL Port running inside container>
+      - 3306:3306
+    expose:
+      # Opens port 3306 on the container
+      - "3306"
+      # Where our data will be persisted 127.0.01
+    volumes:
+      - msqdata:/var/lib/mysql:rw
+    networks:
+      - pgdatabase
+
+  adminer:
+      image: adminer
+      restart: always
+      ports:
+        - 8180:8080
+      networks:
+      - pgdatabase
+
+networks:
+  pgdatabase:
+    external: true
+
+volumes:
+  msqdata:
+    external: true
